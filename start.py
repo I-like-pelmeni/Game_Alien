@@ -16,6 +16,8 @@ class AlienInvasion:
         self.settings = Settings()
 
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        # self.screen = pygame.display.set_mode((self.settings.screen_width, 
+        #     self.settings.screen_height))
         self.settings.screen_width = self.screen.get_rect().width
         self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Alien Invasion")
@@ -28,7 +30,7 @@ class AlienInvasion:
         while True:
             self._check_events()
             self.ship.update()
-            self.bullets.update()
+            self._update_bullets()
             self._update_screen()
 
     def _check_events(self):
@@ -60,8 +62,18 @@ class AlienInvasion:
 
     def _fire_bullet(self):
         """Создание нового снаряда и включение его в группу bullets."""
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+    
+    def _update_bullets(self):
+        """Обновляет позиции снарядов и уничтожает старые снаряды."""
+        self.bullets.update()
+
+        # Удаление снарядов, вышедших за край экрана
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
 
     def _update_screen(self):
         """Обновляет изображения на экране и отображает новый экран."""
@@ -75,4 +87,4 @@ class AlienInvasion:
 if __name__ == '__main__':
     # Создание экземпляра и запуск игры.
     ai = AlienInvasion()
-    ai.run_game() 
+    ai.run_game()
