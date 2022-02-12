@@ -4,6 +4,7 @@ class GameStats():
     def __init__(self, ai_game):
         """Инициализирует статистику"""
         self.settings = ai_game.settings
+        self.high_score = 0
         self.reset_stats()
 
         # Игра запускается в неактивной состоянии
